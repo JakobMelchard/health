@@ -84,30 +84,35 @@
 <body>
   <div class="card">
     <div class="dot checking" id="dot"></div>
-    <div class="label checking" id="label">...</div>
+    <div class="label checking" id="label">checking…</div>
   </div>
 
   <script>
     const dot   = document.getElementById('dot');
     const label = document.getElementById('label');
 
+    // URL of your Worker
+    const WORKER_URL = 'https://ping.melchard.org';
+
     async function check() {
+      setState('checking'); // show checking state
       try {
-        const res = await fetch('https://ping.melchard.com', { cache: 'no-store' });
+        const res = await fetch(WORKER_URL, { cache: 'no-store' });
         setState(res.ok ? 'up' : 'down');
       } catch {
         setState('down');
       }
     }
 
-    function setState(s) {
-      dot.className   = 'dot ' + s;
-      label.className = 'label ' + s;
-      label.textContent = s;
+    function setState(state) {
+      dot.className   = 'dot ' + state;
+      label.className = 'label ' + state;
+      label.textContent = state === 'checking' ? 'checking…' : state;
     }
 
+    // Initial check and repeat every 30 seconds
     check();
-    setInterval(check, 30_000); // re-check every 30s
+    setInterval(check, 30_000);
   </script>
 </body>
 </html>
